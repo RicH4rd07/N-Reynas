@@ -1,0 +1,22 @@
+[user].
+nreinas(N,Sol) :- generarTablero(N,Tablero), permutar(Tablero,Sol), buenTablero(Sol).
+%%Este predicado nos permirte conocer el resultado de la operacion
+generarTablero(0,[]).%%Genera un tablero de dimensiones variables
+generarTablero(X,[X|R]) :- XMenos1 is X - 1, XMenos1 >= 0, generarTablero(XMenos1,R).
+%%Revisa que la dimension del tablero sea mayo a uno
+permutar([],[]).
+permutar(X,[C|Z]) :- seleccionar(X,C,R), permutar(R,Z).
+seleccionar([X|R],X,R).
+seleccionar([C|R],X,[C|Y]) :- seleccionar(R,X,Y).
+buenTablero([]).
+buenTablero([C|R]) :- not(amenaza(C,R)), buenTablero(R).
+% ! Verifica si en el tablero X, ninguna reina amenaza a otra.
+amenaza(X,Prof,[C|_]) :- X is C+Prof;
+X is C-Prof;
+X = C.
+amenaza(X,Prof,[_|R]) :- ProfMas1 is Prof + 1, amenaza(X,ProfMas1,R).
+amenaza(_,[]) :- fail.
+amenaza(X,Y) :- amenaza(X,1,Y).
+% ! Verifica si una reina colocada en la columna X de la fila n de un
+% tablero amenaza a cualquiera de las demás reinas colocadas en las
+% filas
